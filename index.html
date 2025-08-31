@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future Signal Bot - NAZMUL Ai FUTURE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-bg: #f5ecff;
+      --card-bg: #ffffff;
+      --primary: #7b3fe4;
+      --accent: #b184f7;
+      --text: #2e1c4d;
+      --highlight: #18FFFF;
+      --yellow: #FFD740;
+      --red: #d00000;
+      --green: #28a745;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--main-bg);
+      color: var(--text);
+      padding: 20px;
+      overflow-x: hidden;
+      animation: backgroundPulse 10s infinite alternate;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .wrapper svg {
+      width: 100%;
+      height: 60px;
+    }
+
+    .wrapper svg text {
+      font-family: 'Orbitron', sans-serif;
+      fill: none;
+      stroke: var(--red);
+      stroke-width: 1px;
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: dash 5s linear infinite;
+      font-size: 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(123, 63, 228, 0.15);
+      animation: float 6s infinite ease-in-out;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      animation: pulse 3s infinite ease-in-out;
+    }
+
+    .section-title i {
+      margin-right: 10px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      background: #fefaff;
+      font-size: 1rem;
+      text-align: center;
+      transition: 0.3s;
+      animation: glowInput 4s infinite ease-in-out;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, #b184f7, #7b3fe4);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: 0.3s;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(123, 63, 228, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .btn-telegram {
+      background: linear-gradient(90deg, #2AABEE, #229ED9);
+      margin-bottom: 15px;
+    }
+
+    .predictions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .prediction-item {
+      background: #f6f0ff;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(123, 63, 228, 0.1);
+      transition: 0.3s;
+    }
+
+    .prediction-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(123, 63, 228, 0.2);
+    }
+
+    .period {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .prediction {
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    .big {
+      background-color: var(--green);
+      color: white;
+    }
+
+    .small {
+      background-color: var(--red);
+      color: white;
+    }
+
+    .footer {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 20px;
+      color: var(--primary);
+    }
+
+    .error-message {
+      color: var(--red);
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      display: none;
+    }
+
+    /* Loading animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-spinner {
+      width: 80px;
+      height: 80px;
+      display: inline-block;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    .loading-text {
+      color: white;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    @keyframes glowInput {
+      0%, 100% { box-shadow: 0 0 5px #b184f7; }
+      50% { box-shadow: 0 0 15px #7b3fe4; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes backgroundPulse {
+      0% { background-color: #f5ecff; }
+      100% { background-color: #f0e0ff; }
+    }
+
+    @keyframes dash {
+      0% { stroke-dashoffset: 500; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .section-title { font-size: 1.2rem; }
+      .container { padding: 10px; }
+      .predictions-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FUTURE SIGNAL BOT</h1>
+    
+    <div class="wrapper">
+      <svg>
+        <text x="50%" y="50%" dy=".35em" text-anchor="middle">
+          NAZMUL Ai FUTURE
+        </text>
+      </svg>
+    </div>
+
+    <a href="https://t.me/+3pzmoN9uxYszZGQ1" target="_blank" class="btn btn-telegram">
+      <i class="fab fa-telegram"></i> JOIN TELEGRAM
+    </a>
+
+    <div class="card">
+      <div class="section-title"><i class="fas fa-crystal-ball"></i> FUTURE PREDICTION</div>
+      
+      <div class="input-group">
+        <label for="startPeriod"><i class="fas fa-calendar-alt"></i> START PERIOD NUMBER</label>
+        <input type="text" id="startPeriod" placeholder="Enter period number" />
+      </div>
+      
+      <div class="input-group">
+        <label for="signalCount"><i class="fas fa-signal"></i> NUMBER OF SIGNALS</label>
+        <select id="signalCount">
+          <option value="5">5 Signals</option>
+          <option value="10">10 Signals</option>
+          <option value="15">15 Signals</option>
+          <option value="20" selected>20 Signals</option>
+        </select>
+      </div>
+      
+      <button class="btn" id="generateBtn" onclick="generatePredictions()">
+        <i class="fas fa-bolt"></i> GENERATE PREDICTIONS
+      </button>
+      
+      <div id="errorMessage" class="error-message">
+        PLEASE ENTER NEW PERIOD
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><i class="fas fa-list"></i> PREDICTIONS</div>
+      <div id="predictionsContainer" class="predictions-grid">
+        <div class="prediction-item">Enter period number and click generate</div>
+      </div>
+    </div>
+
+    <div class="footer">CREATE BY :- NAZMUL VAI</div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Generating Predictions...</div>
+    </div>
+  </div>
+
+  <script>
+    let lastPeriod = null;
+    
+    function generatePredictions() {
+      const startPeriodInput = document.getElementById('startPeriod').value.trim();
+      const signalCount = parseInt(document.getElementById('signalCount').value);
+      const generateBtn = document.getElementById('generateBtn');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // Hide error message initially
+      errorMessage.style.display = 'none';
+      
+      if (!startPeriodInput) {
+        alert('Please enter a valid period number');
+        return;
+      }
+      
+      // Check if the same period is being used again
+      if (lastPeriod === startPeriodInput) {
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      let startPeriod;
+      try {
+        startPeriod = BigInt(startPeriodInput);
+      } catch (e) {
+        alert('Please enter a valid period number');
+        return;
+      }
+      
+      // Store the current period
+      lastPeriod = startPeriodInput;
+      
+      // Show loading animation
+      generateBtn.disabled = true;
+      loadingOverlay.classList.add('active');
+      
+      // Simulate processing time (1.5 seconds)
+      setTimeout(() => {
+        const predictionsContainer = document.getElementById('predictionsContainer');
+        predictionsContainer.innerHTML = '';
+        
+        // Generate the selected number of periods
+        for (let i = 1; i <= signalCount; i++) {
+          const period = (startPeriod + BigInt(i)).toString();
+          const prediction = predictFuture(period);
+          
+          const predictionItem = document.createElement('div');
+          predictionItem.className = 'prediction-item';
+          
+          predictionItem.innerHTML = `
+            <div class="period">${period}</div>
+            <div class="prediction ${prediction === 'BIG' ? 'big' : 'small'}">${prediction}</div>
+          `;
+          
+          predictionsContainer.appendChild(predictionItem);
+        }
+        
+        // Hide loading animation
+        loadingOverlay.classList.remove('active');
+        generateBtn.disabled = false;
+      }, 1500);
+    }
+    
+    function predictFuture(period) {
+      // This is a simplified prediction algorithm
+      // In a real application, this would use more complex logic
+      
+      // Convert period to a number for calculation
+      const num = parseInt(period.slice(-4)) || parseInt(period);
+      
+      // Simple algorithm based on the period number
+      if (num % 3 === 0) {
+        return Math.random() > 0.4 ? 'BIG' : 'SMALL';
+      } else if (num % 5 === 0) {
+        return Math.random() > 0.6 ? 'BIG' : 'SMALL';
+      } else {
+        return Math.random() > 0.5 ? 'BIG' : 'SMALL';
+      }
+    }
+  </script>
+</body>
+</html>
